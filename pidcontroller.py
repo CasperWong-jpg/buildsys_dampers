@@ -13,9 +13,9 @@ class Controller:
 		self.setpoint = 20
 
 	def calc_setpoint(self,occupancy):
-		self.setpoint=max(25,20+occupancy*1)
+		self.setpoint=min(25,20+occupancy*1)
 
-	def update(self,current_temp)
+	def update(self,current_temp):
 		error = self.setpoint - current_temp
 		self.integral += error
 		derivative = error - self.prev_error
@@ -47,6 +47,6 @@ def main():
 		print(f"Actuation output:{output}\n")
 		time.sleep(30)
 
- if __name__ == "main":
+if __name__ == "main":
 	main()
 
