@@ -30,13 +30,14 @@ def control(curr_time, occupied, schedule, tau):
     return signal
 
 def convert_to_hour(time, sampling_frequency):
-    pass
+    return time/(60*60*sampling_frequency)
+
 if __name__ == '__main__':
 
     # say the set point is 23 celcius, assuming a 2 degree dead band (we can change it to 1 degree as well)
     dead_band_upper = 25
     dead_band_lower = 21
-    sampling_frequency = 2 # Assuming sampling every 30 seconds
+    sampling_frequency = 1/30 # Assuming sampling every 30 seconds
     schedule = [0,1,0] # array of size 168 = number of hours in a week
     day, hour = 2, 20
 
@@ -49,7 +50,7 @@ if __name__ == '__main__':
 
     # Let's assume that the temperature data fed into the estimate_RC is strictly decaying
     tau = estimate_RC(chunked_temp_data, dead_band_upper, dead_band_lower)
-    tau = convert_to_hour(tau)
+    tau = convert_to_hour(tau, sampling_frequency)
     occupied = is_occupied(occupancy)
     
     curr_time = 24*day + hour
