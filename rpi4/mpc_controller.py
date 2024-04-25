@@ -19,14 +19,14 @@ def chunker(temperature_data, dead_band_upper, dead_band_lower):
 def is_occupied(occupancy):
     return (occupancy != 0)
 
-def control(curr_time, occupied, schedule, tau):
+def control_fn(curr_time, occupied, schedule, tau):
     if schedule[curr_time + tau] == 1:
         signal = True
     else:
         if occupied:
             signal = True
         else:
-            signal =False
+            signal = False
     return signal
 
 def convert_to_hour(time, sampling_frequency):
@@ -54,3 +54,5 @@ if __name__ == '__main__':
     occupied = is_occupied(occupancy)
     
     curr_time = 24*day + hour
+
+    control = control_fn(curr_time, occupied, schedule, tau)
