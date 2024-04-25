@@ -43,5 +43,3 @@ temperature = 0
 while True:
     print(f"temperature: {temperature}")
     time.sleep(1)
-
-

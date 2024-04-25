@@ -2,8 +2,6 @@
 import pandas as pd
 import numpy as np
 from scipy.optimize import curve_fit
-from functools import partial
-from sklearn.metrics import r2_score
 
 def base_function(t, tau, dead_band_upper):
     return dead_band_upper*np.exp(-t/tau)
@@ -52,13 +50,15 @@ if __name__ == '__main__':
     temperature_data = pd.read('temperature.csv') 
 
     # Convert temperature_data into chunks of decaying exponentials
-    chunked_temp_data = chunker(temperature_data, dead_band_upper, dead_band_lower)
+    chunked_temp_data = chunker(temperature_data, dead_band_upper, dead_band_lower) 
+    # we can avoid this by storing the values of temperature only when the vent is closed and the temperature reached 25 outside
 
     # Let's assume that the temperature data fed into the estimate_RC is strictly decaying
-    tau = estimate_RC(chunked_temp_data, dead_band_upper, dead_band_lower)
+    tau = estimate_RC(chunked_temp_data)
     tau = convert_to_hour(tau, sampling_frequency)
+
+    # Control part of it once tau value is estimated by fitting an exponential decay function to the temperature data
     occupied = is_occupied(occupancy)
-    
     curr_time = 24*day + hour
 
     control = control_fn(curr_time, occupied, schedule, tau)
