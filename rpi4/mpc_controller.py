@@ -38,11 +38,17 @@ if __name__ == '__main__':
     dead_band_upper = 25
     dead_band_lower = 21
     sampling_frequency = 1/30 # Assuming sampling every 30 seconds
-    schedule = [0,1,0] # array of size 168 = number of hours in a week
-    day, hour = 2, 20
+    schedule = [1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,
+                1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,
+                1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,
+                1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,
+                1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,
+                1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,] # array of size 168 = number of hours in a week
+    day, hour = 3, 22
 
     # temperature data is assumed to start at the dead_band_upper end and the vent is closed
-    occupancy = 0 # binary value fetched from the sensor
+    occupancy = 0 # binary value fetched from the sensor say using a get_curr_occupany from the RPI4
     temperature_data = pd.read('temperature.csv') 
 
     # Convert temperature_data into chunks of decaying exponentials
