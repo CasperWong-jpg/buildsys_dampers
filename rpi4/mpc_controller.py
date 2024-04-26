@@ -100,7 +100,7 @@ class RC_Controller:
             flag = 1
         elif self.current_temp <= self.dead_band_lower:
             flag = 0
-        
+
         if flag == 1:
             self.hist_temperature.append(self.current_temp)
         if flag == 0:
@@ -150,13 +150,14 @@ def move_to_angle(angle):
     # pwm.ChangeDutyCycle(0)  # Stop sending PWM signal
 
 def main():
+    # array of size 168 = number of hours in a week
     schedule = [1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,
                 1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,
                 1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,
                 1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,
                 1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,
                 1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,] # array of size 168 = number of hours in a week
+                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1]
     # Initialize controller as global between threads
     controller = RC_Controller(schedule)
     try:
@@ -167,7 +168,6 @@ def main():
         pwm.start(0) 
         
         while True:
-            controller.calc_setpoint()
             output = controller.update()
             move_to_angle(90*output) # Binary control
             timestamp =  datetime.now().strftime("%Y-%m-%d %H:%M:%S")
