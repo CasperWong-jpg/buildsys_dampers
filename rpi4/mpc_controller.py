@@ -39,7 +39,7 @@ def base_function(t, tau, dead_band_upper):
 
 def estimate_RC(temperature):
     t = np.arange(len(temperature))
-    popt, pcov = curve_fit(base_function, t, temperature_data)
+    popt, pcov = curve_fit(base_function, t, temperature)
     return popt[0]
 
 def is_occupied(occupancy):
