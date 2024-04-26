@@ -155,16 +155,9 @@ def move_to_angle(angle):
     # pwm.ChangeDutyCycle(0)  # Stop sending PWM signal
 
 def main():
-    # array of size 168 = number of hours in a week
-    schedule = [1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,
-                1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,
-                1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,
-                1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,
-                1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,
-                1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1]
-    # Initialize controller as global between threads
-    controller = RC_Controller(schedule)
+    
+    
+    
     try:
         # Start receiving data in a separate thread
         thread = threading.Thread(target=recv_instr)
@@ -175,7 +168,7 @@ def main():
         while True:
             output = controller.update()
             move_to_angle(90*output) # Binary control
-            timestamp =  datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            timestamp =  datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             print(timestamp)
             print(f"Current Temperature:{controller.current_temp} degreeC")
             print(f"Current Occupancy:{controller.occupancy}")
@@ -188,6 +181,16 @@ def main():
         GPIO.cleanup()
 
 if __name__ == '__main__':
+    # array of size 168 = number of hours in a week
+    schedule = [1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,
+                1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,
+                1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,
+                1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,
+                1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,
+                1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1]
+    # Initialize controller as global between threads
+    controller = RC_Controller(schedule)
     main()
     # # say the set point is 23 celcius, assuming a 2 degree dead band (we can change it to 1 degree as well)
     # dead_band_upper = 25
