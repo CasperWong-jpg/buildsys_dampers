@@ -46,12 +46,19 @@ def is_occupied(occupancy):
 def control_fn(curr_time, occupied, schedule, tau, current_temp, dead_band_upper, dead_band_lower):
     if schedule[curr_time + tau] == 1:
         signal = 1
-    elif current_temp < dead_band_lower:
-        signal = 1
+    # elif current_temp < dead_band_lower:
+    #     signal = 1
+    # elif occupied:
+    #     signal = 1
+    # elif current_temp > dead_band_upper:
+    #     signal = 0
+    # else:
+    #     signal = 0
     elif occupied:
-        signal = 1
-    elif current_temp > dead_band_upper:
-        signal = 0
+        if current_temp < dead_band_upper:
+            signal = 1
+        else:
+            signal = 0
     else:
         signal = 0
     return signal
