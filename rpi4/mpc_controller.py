@@ -1,9 +1,7 @@
 # MPCC or MPPI
-import pandas as pd
 import numpy as np
 from scipy.optimize import curve_fit
 import datetime
-import calendar
 import time
 import threading
 import socket
@@ -39,7 +37,7 @@ def base_function(t, tau, dead_band_upper):
 
 def estimate_RC(temperature):
     t = np.arange(len(temperature))
-    popt, pcov = curve_fit(base_function, t, temperature)
+    popt, pcov = curve_fit(base_function, t, np.array(temperature))
     return popt[0]
 
 def is_occupied(occupancy):
@@ -63,9 +61,9 @@ def convert_to_hour(time, sampling_frequency):
 
 class RC_Controller:
     def __init__(self, schedule):
-        self.setpoint = 23
-        self.dead_band_upper = 25
-        self.dead_band_lower = 21
+        self.setpoint = 21
+        self.dead_band_upper = 22
+        self.dead_band_lower = 20
 
         self.current_temp = self.setpoint  # Assume temp at setpoint to start
         self.occupancy = 0  # Assume no occupants to start
@@ -76,15 +74,17 @@ class RC_Controller:
         self.sampling_frequency = 1/30
         self.tau = 10 # Initial guess of the time constant = 10hr for the room
 
+        self.flag = 0
+
     def get_tau(self):
         tau = estimate_RC(self.hist_temperature)
         return tau
     
     def update(self):
 
-        currentDateAndTime = datetime.now()
+        currentDateAndTime = datetime.datetime.now()
         currentTime = currentDateAndTime.hour
-        currentDate = currentDateAndTime.date
+        currentDate = currentDateAndTime.date()
         day, hour = (currentDate.isoweekday()-1), currentTime
 
         curr_time = 24*day + hour
@@ -93,21 +93,19 @@ class RC_Controller:
             tau = self.get_tau()
             tau = convert_to_hour(tau, self.sampling_frequency)
             self.tau = tau
-        else:
-            tau = self.tau
 
         if self.current_temp >= self.dead_band_upper:
-            flag = 1
+            self.flag = 1
         elif self.current_temp <= self.dead_band_lower:
-            flag = 0
+            self.flag = 0
 
-        if flag == 1:
+        if self.flag == 1:
             self.hist_temperature.append(self.current_temp)
-        if flag == 0:
+        if self.flag == 0:
             self.hist_temperature = []
 
         occupied = is_occupied(self.occupancy)
-        control = control_fn(curr_time, occupied, self.schedule, tau, self.current_temp, self.dead_band_upper, self.dead_band_lower)
+        control = control_fn(curr_time, occupied, self.schedule, self.tau, self.current_temp, self.dead_band_upper, self.dead_band_lower)
 
         return control
 
