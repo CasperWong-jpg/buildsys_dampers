@@ -3,9 +3,11 @@ import socket
 from time import sleep
 from machine import Pin, ADC
 
-SERVER="172.26.160.113"  # RPi IP Address
+# SERVER="172.26.160.113"  # RPi IP Address
+SERVER = "10.0.0.142"
 PORT=8080
-ssid = "CMU-DEVICE"
+ssid = "olympia_EXT"
+password = "imtrynaeat"
 adc = ADC(4)  # Internal temperature sensor
 
 # Register device - search web for "CMU Device"
@@ -15,7 +17,7 @@ def connect():
     # Connect to WLAN and return IP address
     wlan = network.WLAN(network.STA_IF)
     wlan.active(True)
-    wlan.connect(ssid, security=0)
+    wlan.connect(ssid, password)
     while wlan.isconnected() == False:
         print('Waiting...')
         sleep(1)
